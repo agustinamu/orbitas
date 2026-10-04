@@ -252,7 +252,7 @@ function fillSelects(): void {
 loadSystems()
   .then(({ file, systems: loaded }) => {
     systems = loaded;
-    $('#credit').textContent = `datos: ${file.source} (${file.retrieved}) · idea: MathMotion`;
+    $('#data-credit').title = `${file.source}, consultado el ${file.retrieved}`;
     fillSelects();
     bindControls();
     sync();
