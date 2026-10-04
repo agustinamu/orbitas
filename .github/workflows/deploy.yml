@@ -12,12 +12,6 @@ on:
 permissions:
   contents: read
 
-# Un grupo por rama: con un grupo único compartido, la comprobación de un PR
-# cancelaba la de otro o, peor, un despliegue de main en curso.
-concurrency:
-  group: pages-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
   # Revisa dependencias que introduzca un PR y bloquea las que traigan
   # vulnerabilidades conocidas. Solo aplica en pull_request.
@@ -60,6 +54,11 @@ jobs:
     permissions:
       pages: write
       id-token: write
+    # Serializa solo los despliegues y no cancela uno en curso. A nivel de
+    # workflow el grupo único hacía que PRs y pushes se cancelaran entre sí.
+    concurrency:
+      group: pages
+      cancel-in-progress: false
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
