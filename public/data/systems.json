@@ -1,0 +1,981 @@
+{
+ "source": "NASA Exoplanet Archive · Planetary Systems Composite Parameters",
+ "retrieved": "2026-10-04",
+ "systems": [
+  {
+   "name": "YZ Ceti",
+   "star": "Enana roja",
+   "dist": "A 12 años luz",
+   "fact": "Uno de nuestros vecinos más cercanos",
+   "teff": 3151,
+   "planets": [
+    {
+     "name": "b",
+     "period": 2.02087,
+     "radius": 0.913
+    },
+    {
+     "name": "c",
+     "period": 3.05989,
+     "radius": 1.05
+    },
+    {
+     "name": "d",
+     "period": 4.65626,
+     "radius": 1.03
+    }
+   ]
+  },
+  {
+   "name": "Gliese 581",
+   "star": "Enana roja",
+   "dist": "A 21 años luz",
+   "fact": "Dos de sus «planetas» resultaron no existir",
+   "teff": 3500,
+   "planets": [
+    {
+     "name": "e",
+     "period": 3.1481,
+     "radius": 1.38
+    },
+    {
+     "name": "b",
+     "period": 5.3686,
+     "radius": 4.79
+    },
+    {
+     "name": "c",
+     "period": 12.9211,
+     "radius": 2.5
+    }
+   ]
+  },
+  {
+   "name": "Kepler-9",
+   "star": "Estrella parecida al Sol",
+   "dist": "A 2.050 años luz",
+   "fact": "Los primeros planetas pillados tirando unos de otros",
+   "teff": 5777,
+   "planets": [
+    {
+     "name": "d",
+     "period": 1.592851,
+     "radius": 1.64
+    },
+    {
+     "name": "b",
+     "period": 19.23891,
+     "radius": 8.29
+    },
+    {
+     "name": "c",
+     "period": 38.9853,
+     "radius": 8.08
+    }
+   ]
+  },
+  {
+   "name": "Gliese 357",
+   "star": "Enana roja",
+   "dist": "A 31 años luz",
+   "fact": "Su planeta d está en la zona habitable",
+   "teff": 3505,
+   "planets": [
+    {
+     "name": "b",
+     "period": 3.9306,
+     "radius": 1.2
+    },
+    {
+     "name": "c",
+     "period": 9.1247,
+     "radius": 1.66
+    },
+    {
+     "name": "d",
+     "period": 55.661,
+     "radius": 2.34
+    }
+   ]
+  },
+  {
+   "name": "Kepler-47",
+   "star": "Dos estrellas: una como el Sol y una enana roja",
+   "dist": "A 3.340 años luz",
+   "fact": "Sus planetas giran alrededor de dos soles, como Tatooine",
+   "teff": 5636,
+   "planets": [
+    {
+     "name": "b",
+     "period": 49.4643,
+     "radius": 3.05
+    },
+    {
+     "name": "d",
+     "period": 187.366,
+     "radius": 7.04
+    },
+    {
+     "name": "c",
+     "period": 303.227,
+     "radius": 4.65
+    }
+   ]
+  },
+  {
+   "name": "TOI-270",
+   "star": "Enana roja",
+   "dist": "A 73 años luz",
+   "fact": "El telescopio James Webb ha estudiado la atmósfera de su planeta d",
+   "teff": 3506,
+   "planets": [
+    {
+     "name": "b",
+     "period": 3.35992,
+     "radius": 1.28
+    },
+    {
+     "name": "c",
+     "period": 5.66051,
+     "radius": 2.33
+    },
+    {
+     "name": "d",
+     "period": 11.38194,
+     "radius": 2
+    }
+   ]
+  },
+  {
+   "name": "K2-381",
+   "star": "Enana naranja",
+   "dist": "A 480 años luz",
+   "fact": "Encontrado en la segunda vida del telescopio Kepler, la misión K2",
+   "teff": 4473,
+   "planets": [
+    {
+     "name": "b",
+     "period": 7.9389334,
+     "radius": 1.075
+    },
+    {
+     "name": "c",
+     "period": 16.034656,
+     "radius": 2
+    },
+    {
+     "name": "d",
+     "period": 26.803023,
+     "radius": 1.689
+    }
+   ]
+  },
+  {
+   "name": "Kepler-60",
+   "star": "Estrella parecida al Sol",
+   "dist": "A 3.340 años luz",
+   "fact": "Sus tres planetas encadenan resonancias 5:4 y 4:3",
+   "teff": 5905,
+   "planets": [
+    {
+     "name": "b",
+     "period": 7.1334,
+     "radius": 1.71
+    },
+    {
+     "name": "c",
+     "period": 8.9187,
+     "radius": 1.9
+    },
+    {
+     "name": "d",
+     "period": 11.8981,
+     "radius": 1.99
+    }
+   ]
+  },
+  {
+   "name": "TOI-700",
+   "star": "Enana roja",
+   "dist": "A 100 años luz",
+   "fact": "Dos planetas del tamaño de la Tierra en su zona habitable",
+   "teff": 3459,
+   "planets": [
+    {
+     "name": "b",
+     "period": 9.97722,
+     "radius": 0.963
+    },
+    {
+     "name": "c",
+     "period": 16.0511039,
+     "radius": 2.535
+    },
+    {
+     "name": "e",
+     "period": 27.810124,
+     "radius": 0.919
+    },
+    {
+     "name": "d",
+     "period": 37.423457,
+     "radius": 1.145
+    }
+   ]
+  },
+  {
+   "name": "Kepler-37",
+   "star": "Estrella parecida al Sol",
+   "dist": "A 210 años luz",
+   "fact": "Su planeta b es apenas más grande que la Luna",
+   "teff": 5357,
+   "planets": [
+    {
+     "name": "b",
+     "period": 13.36702,
+     "radius": 0.3098
+    },
+    {
+     "name": "c",
+     "period": 21.301848,
+     "radius": 0.755
+    },
+    {
+     "name": "d",
+     "period": 39.7922622,
+     "radius": 2.03
+    },
+    {
+     "name": "e",
+     "period": 51.196,
+     "radius": 0.37
+    }
+   ]
+  },
+  {
+   "name": "Kepler-51",
+   "star": "Estrella algo más caliente que el Sol",
+   "dist": "A 2.560 años luz",
+   "fact": "Planetas tan hinchados que se los llama de «algodón de azúcar»",
+   "teff": 6018,
+   "planets": [
+    {
+     "name": "b",
+     "period": 45.154,
+     "radius": 7.1
+    },
+    {
+     "name": "c",
+     "period": 85.312,
+     "radius": 9
+    },
+    {
+     "name": "d",
+     "period": 130.194,
+     "radius": 9.7
+    },
+    {
+     "name": "e",
+     "period": 264.284,
+     "radius": 2.18
+    }
+   ]
+  },
+  {
+   "name": "V1298 Tau",
+   "star": "Estrella muy joven",
+   "dist": "A 350 años luz",
+   "fact": "Una estrella bebé: unos 20 millones de años",
+   "teff": 4970,
+   "planets": [
+    {
+     "name": "c",
+     "period": 8.249164,
+     "radius": 5.08
+    },
+    {
+     "name": "d",
+     "period": 12.401394,
+     "radius": 6.53
+    },
+    {
+     "name": "b",
+     "period": 24.140006,
+     "radius": 9.41
+    },
+    {
+     "name": "e",
+     "period": 48.677714,
+     "radius": 10.17
+    }
+   ]
+  },
+  {
+   "name": "Kepler-138",
+   "star": "Enana roja",
+   "dist": "A 220 años luz",
+   "fact": "Sus planetas c y d podrían ser mundos de agua",
+   "teff": 3841,
+   "planets": [
+    {
+     "name": "b",
+     "period": 10.3134,
+     "radius": 0.64
+    },
+    {
+     "name": "c",
+     "period": 13.7815,
+     "radius": 1.51
+    },
+    {
+     "name": "d",
+     "period": 23.0923,
+     "radius": 1.51
+    },
+    {
+     "name": "e",
+     "period": 38.23,
+     "radius": 0.797
+    }
+   ]
+  },
+  {
+   "name": "Kepler-176",
+   "star": "Enana naranja",
+   "dist": "A 1.720 años luz",
+   "fact": "Sus tres planetas exteriores van casi a ritmo 2:1",
+   "teff": 5232,
+   "planets": [
+    {
+     "name": "b",
+     "period": 5.433074,
+     "radius": 1.43
+    },
+    {
+     "name": "c",
+     "period": 12.759712,
+     "radius": 2.6
+    },
+    {
+     "name": "d",
+     "period": 25.751974,
+     "radius": 2.51
+    },
+    {
+     "name": "e",
+     "period": 51.16579,
+     "radius": 1.45
+    }
+   ]
+  },
+  {
+   "name": "Kepler-223",
+   "star": "Estrella parecida al Sol",
+   "dist": "A 6.070 años luz",
+   "fact": "Un ritmo 3:4:6:8 que conserva desde su formación",
+   "teff": 5803,
+   "planets": [
+    {
+     "name": "b",
+     "period": 7.38449,
+     "radius": 2.99
+    },
+    {
+     "name": "c",
+     "period": 9.84564,
+     "radius": 3.44
+    },
+    {
+     "name": "d",
+     "period": 14.78869,
+     "radius": 5.24
+    },
+    {
+     "name": "e",
+     "period": 19.72567,
+     "radius": 4.6
+    }
+   ]
+  },
+  {
+   "name": "L 98-59",
+   "star": "Enana roja",
+   "dist": "A 35 años luz",
+   "fact": "A solo 35 años luz, uno de los objetivos del James Webb",
+   "teff": 3415,
+   "planets": [
+    {
+     "name": "b",
+     "period": 2.253114,
+     "radius": 0.837
+    },
+    {
+     "name": "c",
+     "period": 3.6906764,
+     "radius": 1.329
+    },
+    {
+     "name": "d",
+     "period": 7.450729,
+     "radius": 1.627
+    },
+    {
+     "name": "e",
+     "period": 12.8278,
+     "radius": 1.49
+    },
+    {
+     "name": "f",
+     "period": 23.064,
+     "radius": 1.48
+    }
+   ]
+  },
+  {
+   "name": "Kepler-62",
+   "star": "Enana naranja",
+   "dist": "A 980 años luz",
+   "fact": "Dos planetas, e y f, en la zona habitable",
+   "teff": 4925,
+   "planets": [
+    {
+     "name": "b",
+     "period": 5.714932,
+     "radius": 1.31
+    },
+    {
+     "name": "c",
+     "period": 12.4417,
+     "radius": 0.54
+    },
+    {
+     "name": "d",
+     "period": 18.16406,
+     "radius": 1.95
+    },
+    {
+     "name": "e",
+     "period": 122.3874,
+     "radius": 1.61
+    },
+    {
+     "name": "f",
+     "period": 267.291,
+     "radius": 1.41
+    }
+   ]
+  },
+  {
+   "name": "Kepler-102",
+   "star": "Enana naranja",
+   "dist": "A 350 años luz",
+   "fact": "Su planeta b es más pequeño que Marte",
+   "teff": 4909,
+   "planets": [
+    {
+     "name": "b",
+     "period": 5.286965,
+     "radius": 0.46
+    },
+    {
+     "name": "c",
+     "period": 7.071392,
+     "radius": 0.567
+    },
+    {
+     "name": "d",
+     "period": 10.311767,
+     "radius": 1.154
+    },
+    {
+     "name": "e",
+     "period": 16.1456994,
+     "radius": 2.17
+    },
+    {
+     "name": "f",
+     "period": 27.453592,
+     "radius": 0.861
+    }
+   ]
+  },
+  {
+   "name": "K2-384",
+   "star": "Enana roja",
+   "dist": "A 270 años luz",
+   "fact": "Cinco planetas pequeños alrededor de una enana roja tenue",
+   "teff": 3623,
+   "planets": [
+    {
+     "name": "b",
+     "period": 2.231527,
+     "radius": 1.076
+    },
+    {
+     "name": "c",
+     "period": 4.194766,
+     "radius": 1.191
+    },
+    {
+     "name": "d",
+     "period": 6.679582,
+     "radius": 1.392
+    },
+    {
+     "name": "e",
+     "period": 9.715043,
+     "radius": 1.345
+    },
+    {
+     "name": "f",
+     "period": 13.62749,
+     "radius": 2.222
+    }
+   ]
+  },
+  {
+   "name": "HD 158259",
+   "star": "Estrella parecida al Sol",
+   "dist": "A 88 años luz",
+   "fact": "Una cadena de planetas casi a ritmo 3:2",
+   "teff": 5801.89,
+   "planets": [
+    {
+     "name": "b",
+     "period": 2.178,
+     "radius": 1.28228
+    },
+    {
+     "name": "c",
+     "period": 3.432,
+     "radius": 2.23
+    },
+    {
+     "name": "d",
+     "period": 5.1980814,
+     "radius": 2.18
+    },
+    {
+     "name": "e",
+     "period": 7.951,
+     "radius": 2.34
+    },
+    {
+     "name": "f",
+     "period": 12.028,
+     "radius": 2.35
+    }
+   ]
+  },
+  {
+   "name": "Kepler-444",
+   "star": "Enana naranja",
+   "dist": "A 120 años luz",
+   "fact": "Uno de los sistemas más antiguos: unos 11.000 millones de años",
+   "teff": 5046,
+   "planets": [
+    {
+     "name": "b",
+     "period": 3.6001053,
+     "radius": 0.403
+    },
+    {
+     "name": "c",
+     "period": 4.5458841,
+     "radius": 0.497
+    },
+    {
+     "name": "d",
+     "period": 6.189392,
+     "radius": 0.53
+    },
+    {
+     "name": "e",
+     "period": 7.743493,
+     "radius": 0.546
+    },
+    {
+     "name": "f",
+     "period": 9.740486,
+     "radius": 0.741
+    }
+   ]
+  },
+  {
+   "name": "Kepler-11",
+   "star": "Estrella parecida al Sol",
+   "dist": "A 2.110 años luz",
+   "fact": "Cinco de sus planetas cabrían dentro de la órbita de Mercurio",
+   "teff": 5663,
+   "planets": [
+    {
+     "name": "b",
+     "period": 10.3039,
+     "radius": 1.8
+    },
+    {
+     "name": "c",
+     "period": 13.0241,
+     "radius": 2.87
+    },
+    {
+     "name": "d",
+     "period": 22.6845,
+     "radius": 3.12
+    },
+    {
+     "name": "e",
+     "period": 31.9996,
+     "radius": 4.19
+    },
+    {
+     "name": "f",
+     "period": 46.6888,
+     "radius": 2.49
+    },
+    {
+     "name": "g",
+     "period": 118.3807,
+     "radius": 3.33
+    }
+   ]
+  },
+  {
+   "name": "K2-138",
+   "star": "Estrella parecida al Sol",
+   "dist": "A 660 años luz",
+   "fact": "Descubierto por aficionados en un proyecto de ciencia ciudadana",
+   "teff": 5356.3,
+   "planets": [
+    {
+     "name": "b",
+     "period": 2.35309,
+     "radius": 1.51
+    },
+    {
+     "name": "c",
+     "period": 3.56004,
+     "radius": 2.299
+    },
+    {
+     "name": "d",
+     "period": 5.40479,
+     "radius": 2.39
+    },
+    {
+     "name": "e",
+     "period": 8.26146,
+     "radius": 3.39
+    },
+    {
+     "name": "f",
+     "period": 12.75758,
+     "radius": 2.904
+    },
+    {
+     "name": "g",
+     "period": 41.96797,
+     "radius": 3.013
+    }
+   ]
+  },
+  {
+   "name": "Kepler-80",
+   "star": "Enana naranja",
+   "dist": "A 1.200 años luz",
+   "fact": "Su sexto planeta lo encontró una inteligencia artificial",
+   "teff": 4540,
+   "planets": [
+    {
+     "name": "f",
+     "period": 0.9867873,
+     "radius": 1.21
+    },
+    {
+     "name": "d",
+     "period": 3.07222,
+     "radius": 1.53
+    },
+    {
+     "name": "e",
+     "period": 4.64489,
+     "radius": 1.6
+    },
+    {
+     "name": "b",
+     "period": 7.05246,
+     "radius": 2.67
+    },
+    {
+     "name": "c",
+     "period": 9.52355,
+     "radius": 2.74
+    },
+    {
+     "name": "g",
+     "period": 14.64558,
+     "radius": 1.13
+    }
+   ]
+  },
+  {
+   "name": "TOI-178",
+   "star": "Enana naranja",
+   "dist": "A 200 años luz",
+   "fact": "Cinco planetas bailando en cadena 18:9:6:4:3",
+   "teff": 4316,
+   "planets": [
+    {
+     "name": "b",
+     "period": 1.9145601,
+     "radius": 1.2
+    },
+    {
+     "name": "c",
+     "period": 3.238486,
+     "radius": 1.754
+    },
+    {
+     "name": "d",
+     "period": 6.557569,
+     "radius": 2.695
+    },
+    {
+     "name": "e",
+     "period": 9.96318,
+     "radius": 2.301
+    },
+    {
+     "name": "f",
+     "period": 15.23335,
+     "radius": 2.417
+    },
+    {
+     "name": "g",
+     "period": 20.71663,
+     "radius": 2.939
+    }
+   ]
+  },
+  {
+   "name": "TOI-1136",
+   "star": "Estrella parecida al Sol",
+   "dist": "A 280 años luz",
+   "fact": "Una estrella joven con seis planetas en cadena de resonancias",
+   "teff": 5770,
+   "planets": [
+    {
+     "name": "b",
+     "period": 4.1727,
+     "radius": 1.9
+    },
+    {
+     "name": "c",
+     "period": 6.2574,
+     "radius": 2.879
+    },
+    {
+     "name": "d",
+     "period": 12.5199,
+     "radius": 4.627
+    },
+    {
+     "name": "e",
+     "period": 18.801,
+     "radius": 2.639
+    },
+    {
+     "name": "f",
+     "period": 26.321,
+     "radius": 3.73591482
+    },
+    {
+     "name": "g",
+     "period": 39.545,
+     "radius": 2.53
+    }
+   ]
+  },
+  {
+   "name": "HD 110067",
+   "star": "Enana naranja",
+   "dist": "A 100 años luz",
+   "fact": "Seis planetas en una cadena de resonancias casi perfecta",
+   "teff": 5266,
+   "planets": [
+    {
+     "name": "b",
+     "period": 9.113678,
+     "radius": 2.2
+    },
+    {
+     "name": "c",
+     "period": 13.673694,
+     "radius": 2.388
+    },
+    {
+     "name": "d",
+     "period": 20.519617,
+     "radius": 2.852
+    },
+    {
+     "name": "e",
+     "period": 30.793091,
+     "radius": 1.94
+    },
+    {
+     "name": "f",
+     "period": 41.05854,
+     "radius": 2.601
+    },
+    {
+     "name": "g",
+     "period": 54.76992,
+     "radius": 2.607
+    }
+   ]
+  },
+  {
+   "name": "TRAPPIST-1",
+   "star": "Enana roja ultrafría",
+   "dist": "A 41 años luz",
+   "fact": "Siete planetas del tamaño de la Tierra, tres en la zona habitable",
+   "teff": 2566,
+   "planets": [
+    {
+     "name": "b",
+     "period": 1.510826,
+     "radius": 1.116
+    },
+    {
+     "name": "c",
+     "period": 2.421937,
+     "radius": 1.097
+    },
+    {
+     "name": "d",
+     "period": 4.049219,
+     "radius": 0.788
+    },
+    {
+     "name": "e",
+     "period": 6.101013,
+     "radius": 0.92
+    },
+    {
+     "name": "f",
+     "period": 9.20754,
+     "radius": 1.045
+    },
+    {
+     "name": "g",
+     "period": 12.352446,
+     "radius": 1.129
+    },
+    {
+     "name": "h",
+     "period": 18.772866,
+     "radius": 0.755
+    }
+   ]
+  },
+  {
+   "name": "Kepler-90",
+   "star": "Estrella algo más caliente que el Sol",
+   "dist": "A 2.770 años luz",
+   "fact": "Ocho planetas, como el nuestro; el octavo lo halló una IA",
+   "teff": 6080,
+   "planets": [
+    {
+     "name": "b",
+     "period": 7.008151,
+     "radius": 1.31
+    },
+    {
+     "name": "c",
+     "period": 8.719375,
+     "radius": 1.19
+    },
+    {
+     "name": "i",
+     "period": 14.44912,
+     "radius": 1.32
+    },
+    {
+     "name": "d",
+     "period": 59.73667,
+     "radius": 2.87
+    },
+    {
+     "name": "e",
+     "period": 91.93913,
+     "radius": 2.66
+    },
+    {
+     "name": "f",
+     "period": 124.9144,
+     "radius": 2.88
+    },
+    {
+     "name": "g",
+     "period": 210.73514,
+     "radius": 7.718
+    },
+    {
+     "name": "h",
+     "period": 331.60296,
+     "radius": 11.252
+    }
+   ]
+  },
+  {
+   "name": "Sistema Solar",
+   "star": "El Sol, una enana amarilla",
+   "dist": "A 8 minutos luz de la Tierra",
+   "fact": "Nuestra casa",
+   "teff": 5772,
+   "planets": [
+    {
+     "name": "Mercurio",
+     "period": 87.969,
+     "radius": 0.383
+    },
+    {
+     "name": "Venus",
+     "period": 224.701,
+     "radius": 0.949
+    },
+    {
+     "name": "Tierra",
+     "period": 365.256,
+     "radius": 1
+    },
+    {
+     "name": "Marte",
+     "period": 686.98,
+     "radius": 0.532
+    },
+    {
+     "name": "Júpiter",
+     "period": 4332.59,
+     "radius": 11.21
+    },
+    {
+     "name": "Saturno",
+     "period": 10759.22,
+     "radius": 9.45
+    },
+    {
+     "name": "Urano",
+     "period": 30688.5,
+     "radius": 4.01
+    },
+    {
+     "name": "Neptuno",
+     "period": 60182,
+     "radius": 3.88
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ekain · Órbitas que suenan</title>
+    <meta name="description" content="30 sistemas planetarios reales convertidos en música: cada planeta toca una nota al completar su órbita." />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🪐</text></svg>"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="preload" href="data/systems.json" as="fetch" crossorigin />
+  </head>
+  <body>
+    <header id="topbar">
+      <div class="brand">
+        <h1>Órbitas <span class="accent">que</span> suenan</h1>
+        <span class="sub">— una nota por órbita —</span>
+      </div>
+      <div class="controls">
+        <button id="btn-sound" class="accent" aria-pressed="false">Activar sonido</button>
+        <span class="sep"></span>
+        <button id="btn-prev" title="Sistema anterior (←)" aria-label="Sistema anterior">‹</button>
+        <select id="system-select" title="Sistema planetario" aria-label="Sistema planetario" disabled></select>
+        <button id="btn-next" title="Sistema siguiente (→)" aria-label="Sistema siguiente">›</button>
+        <span class="sep"></span>
+        <button id="btn-play" aria-pressed="false" title="Pausa (espacio)">Pausa</button>
+        <button id="btn-restart" title="Vuelve a alinear los planetas en la vertical">Reiniciar</button>
+        <button id="btn-tour" aria-pressed="false" title="Recorre los 30 sistemas como el vídeo">Recorrido</button>
+        <button id="btn-all" aria-pressed="false" title="Todos los sistemas sonando a la vez">Los 30</button>
+      </div>
+    </header>
+
+    <main id="content">
+      <section id="info" aria-live="polite"></section>
+      <div id="sky" role="region" aria-label="Órbitas de los planetas">
+        <canvas id="canvas"></canvas>
+        <p id="rate"></p>
+        <div id="tour-progress"></div>
+      </div>
+    </main>
+
+    <section id="tuning" aria-label="Afinación">
+      <div class="field">
+        <label for="speed">Velocidad <output id="speed-out"></output></label>
+        <div class="row">
+          <input type="range" id="speed" min="-1.5" max="2" step="0.01" value="0" title="Doble clic: velocidad recomendada" />
+          <button type="button" id="speed-reset" class="mini" title="Velocidad recomendada para cada sistema" disabled>recomendada</button>
+        </div>
+        <p class="hint">El tiempo va acelerado; el ritmo entre planetas es exacto.</p>
+      </div>
+      <div class="field">
+        <label for="k">Relación órbita → nota <output id="k-out"></output></label>
+        <div class="row">
+          <input type="range" id="k" min="0.05" max="1" step="0.01" value="1" disabled />
+          <label class="check"><input type="checkbox" id="k-auto" checked /> auto</label>
+        </div>
+        <p class="hint" id="k-hint"></p>
+      </div>
+      <div class="field">
+        <label for="scale">Escala</label>
+        <select id="scale">
+          <option value="penta">Pentatónica (la del vídeo)</option>
+          <option value="major">Mayor</option>
+          <option value="minor">Menor natural</option>
+          <option value="chrom">Cromática (12 notas)</option>
+          <option value="free">Sin ajustar (frecuencia exacta)</option>
+        </select>
+        <p class="hint">Cada nota se lleva a la más cercana de la escala.</p>
+      </div>
+      <div class="field">
+        <label for="top">Nota del planeta más rápido</label>
+        <select id="top"></select>
+        <p class="hint">Cuanto más lento el planeta, más grave su nota.</p>
+      </div>
+      <div class="field">
+        <label for="vol">Volumen <output id="vol-out"></output></label>
+        <input type="range" id="vol" min="0" max="1" step="0.01" value="0.7" />
+        <label class="check"><input type="checkbox" id="ambient" /> fondo ambiental</label>
+      </div>
+    </section>
+
+    <footer id="statusbar">
+      <a class="back" href="https://ekain.amutxastegi.com/">← herramientas</a>
+      <span><b>espacio</b> pausa</span>
+      <span><b>← →</b> sistema</span>
+      <span><b>clic</b> en la cuadrícula elige sistema</span>
+      <span class="credit" id="credit">datos: NASA Exoplanet Archive · idea: MathMotion</span>
+    </footer>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
