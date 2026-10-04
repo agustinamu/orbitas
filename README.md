@@ -28,9 +28,17 @@ La velocidad (`1 segundo = X días`) acelera el tiempo por igual para todos los
 planetas: el ritmo relativo es exacto. Las notas se programan en el instante del
 cruce dentro de cada fotograma, no al inicio del fotograma.
 
-Simplificaciones: todos los planetas arrancan alineados en la vertical (las
-fases iniciales reales no se usan) y el tamaño de las órbitas sigue la tercera
-ley de Kepler (`a ∝ P^2/3`), comprimido en sistemas muy anchos.
+## Escala de las órbitas
+
+El radio de cada órbita sigue la tercera ley de Kepler (`a ∝ P^2/3`), exacta
+dentro de un sistema sin conocer la masa de la estrella (se cancela). Las
+órbitas están a escala dentro de su sistema, salvo cuando la exterior está a
+más de 7 veces la distancia de la interior: entonces se comprimen con un
+exponente y el panel lo indica con «escala comprimida» (Kepler-9, Kepler-62,
+Kepler-90 y el Sistema Solar). No hay escala común entre sistemas (cada uno
+llena la pantalla), y los tamaños de planetas y estrella no están a escala.
+
+Los planetas arrancan alineados en la vertical: las fases iniciales reales no se usan.
 
 «≈ 3:2» marca dos vecinos con periodos a menos de un 2 % de una razón sencilla;
 «en ritmo», que todos los pares vecinos lo están.

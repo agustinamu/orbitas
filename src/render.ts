@@ -116,7 +116,7 @@ export class Renderer {
     g.stroke();
 
     const rgb = starRgb(sys.teff);
-    const sr = Math.max(2.5, R * (mini ? 0.07 : 0.035));
+    const sr = Math.max(2, R * (mini ? 0.045 : 0.03));
     const glow = g.createRadialGradient(cx, cy, 0, cx, cy, sr * 5);
     glow.addColorStop(0, `rgba(${rgb},0.9)`);
     glow.addColorStop(0.25, `rgba(${rgb},0.25)`);
@@ -130,9 +130,9 @@ export class Renderer {
     g.arc(cx, cy, sr, 0, TAU);
     g.fill();
 
-    const inner = mini ? 0.2 : 0.12;
     for (const p of sys.planets) {
-      const r = R * (inner + (1 - inner) * p.orbit);
+      // Proporcional al semieje real: a escala dentro del sistema salvo si está comprimido.
+      const r = R * p.orbit;
       // Antihorario desde las 12, como en el vídeo (en canvas el eje y va hacia abajo).
       const th = -Math.PI / 2 - ((sys.t / p.period) % 1) * TAU;
       const hot = Math.exp(-Math.max(0, now - p.flash) / 1000 / FLASH_TAU);

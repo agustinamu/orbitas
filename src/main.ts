@@ -54,7 +54,11 @@ function renderInfo(): void {
   info.innerHTML = `<h2>${esc(sys.name)}</h2>
     <p class="star">${esc(sys.star)}</p><p class="dist">${esc(sys.dist)}</p>
     <p class="fact">${esc(sys.fact)}</p>
-    ${sys.inRhythm ? '<span class="badge">en ritmo</span>' : ''}
+    <div class="badges">${sys.inRhythm ? '<span class="badge">en ritmo</span>' : ''}${
+      sys.compressed
+        ? '<span class="badge dim" title="La órbita exterior está más de 7 veces más lejos que la interior: se comprimen para que quepan">escala comprimida</span>'
+        : ''
+    }</div>
     <ul class="planets${wide ? ' wide' : ''}">${sys.planets
       .map(
         (p, i) => `<li data-i="${i}" style="--c:${p.color}">
@@ -82,6 +86,8 @@ function renderTuning(): void {
   const rate = state.all ? `velocidad × ${fmt(state.mult, state.mult < 10 ? 2 : 0)}` : `1 segundo = ${fmt(dps, dps < 10 ? 1 : 0)} días`;
   $('#speed-out').textContent = rate;
   $('#rate').textContent = rate;
+  // En la cuadrícula pisaría la etiqueta del último sistema; ya está en la mesa de afinación.
+  $('#rate').hidden = state.all;
   $<HTMLInputElement>('#speed').value = String(Math.log10(state.mult));
   $<HTMLButtonElement>('#speed-reset').disabled = state.mult === 1;
 

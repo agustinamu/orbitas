@@ -214,9 +214,18 @@ optgroup {
   color: var(--bad);
 }
 
-.badge {
-  align-self: flex-start;
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
   margin-block: 0.5rem;
+}
+
+.badges:empty {
+  display: none;
+}
+
+.badge {
   padding: 0.3rem 0.55rem;
   border: 1px solid var(--brass);
   color: var(--brass);
@@ -224,6 +233,12 @@ optgroup {
   font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
+}
+
+.badge.dim {
+  border-color: var(--brass-soft);
+  color: var(--paper-dim);
+  cursor: help;
 }
 
 .planets {

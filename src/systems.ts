@@ -38,6 +38,7 @@ export interface System extends Omit<SystemData, 'planets'> {
   pMax: number;
   baseSpeed: number; // días por segundo a velocidad ×1
   inRhythm: boolean;
+  compressed: boolean; // órbitas comprimidas para caber: no están a escala
   t: number; // días simulados
   k: number; // relación órbita → nota efectiva (ver music.ts)
 }
@@ -92,6 +93,7 @@ function prepare(d: SystemData): System {
     // lento no tarda más de 2 minutos (si no, Neptuno no sonaría nunca).
     baseSpeed: Math.max(pMin / 0.6, pMax / 120),
     inRhythm: planets.slice(1).every((p) => p.ratio),
+    compressed: squash < 1,
     t: 0,
     k: 1,
   };
