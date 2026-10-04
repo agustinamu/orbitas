@@ -28,6 +28,7 @@ export interface Planet extends PlanetData {
   ratio: string | null; // resonancia con el planeta anterior, «3:2»
   count: number; // órbitas completadas (para detectar el cruce de la vertical)
   flash: number; // performance.now() del último cruce
+  lastNote: number; // tiempo de audio de la última nota (límite de voces)
   midi: number;
   freq: number;
 }
@@ -51,8 +52,8 @@ const COLORS = ['#e0564a', '#3fbf8c', '#b25cc9', '#e3b14a', '#5a9be6', '#ef86b4'
 const RATIOS: [number, number][] = [[2, 1], [3, 2], [4, 3], [5, 4], [6, 5], [5, 3], [8, 5], [3, 1], [5, 2]];
 const RATIO_TOL = 0.02;
 
-// Órbita más interior respecto a la más exterior como mínimo; por debajo se comprime.
-const MAX_ORBIT_SPREAD = 7;
+// Distancia máxima entre la órbita exterior y la interior; por encima se comprime.
+export const MAX_ORBIT_SPREAD = 7;
 
 function prepare(d: SystemData): System {
   const periods = d.planets.map((p) => p.period);
@@ -79,6 +80,7 @@ function prepare(d: SystemData): System {
       ratio,
       count: 0,
       flash: -Infinity,
+      lastNote: -Infinity,
       midi: 0,
       freq: 0,
     };
@@ -104,6 +106,7 @@ export function resetSystem(s: System): void {
   for (const p of s.planets) {
     p.count = 0;
     p.flash = -Infinity;
+    p.lastNote = -Infinity;
   }
 }
 

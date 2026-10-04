@@ -56,8 +56,21 @@ sistema deja de coincidir con el del vídeo. Kepler-90 está en el archivo como
 
 ## Módulos (`src/`)
 
-- `systems.ts` — carga del JSON; tamaño de órbita y resonancias.
+- `systems.ts` — carga del JSON; tamaño de órbita (Kepler) y resonancias.
 - `music.ts` — frecuencia orbital → nota (relación `k` + escala).
-- `audio.ts` — campana Web Audio con reverb de convolución y fondo ambiental.
-- `render.ts` — canvas: órbitas, estelas, destellos y cuadrícula de «los 30».
-- `main.ts` — interfaz, bucle de tiempo y recorrido.
+- `clock.ts` — reloj de la simulación: avanza el tiempo y avisa de cada cruce de
+  la vertical con su instante exacto dentro del fotograma. Sin DOM ni audio.
+- `audio.ts` — campana Web Audio con reverb de convolución, fondo ambiental y
+  tope de voces simultáneas.
+- `render.ts` — canvas: órbitas, estelas (degradado cónico), destellos y
+  cuadrícula de «los 30».
+- `panel.ts` — ficha del sistema y lecturas de la mesa de afinación.
+- `dom.ts` — utilidades de DOM y formato.
+- `main.ts` — estado de la interfaz, controles, bucle y recorrido.
+
+## Límites de audio
+
+Un planeta no suena más de una vez cada 80 ms (más rápido sería un zumbido) y
+como mucho suenan 160 notas a la vez. Con todos los sistemas a la vez las colas
+de las notas se acortan (×0,4): a velocidad ×1 quedan unas 90 voces y no se
+pierde ninguna nota; el tope solo actúa a velocidades extremas.

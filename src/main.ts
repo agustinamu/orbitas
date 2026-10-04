@@ -1,123 +1,77 @@
+// Orquestación: estado de la interfaz, controles, bucle de animación y recorrido.
 import './style.css';
+import { $, esc } from './dom';
 import { loadSystems, resetSystem, type System } from './systems';
-import { AUTO_SPAN, mtof, noteName, tune, type ScaleId, type Tuning } from './music';
+import { mtof, noteName, tune, type ScaleId, type Tuning } from './music';
 import { Synth } from './audio';
 import { Renderer } from './render';
+import { Panel } from './panel';
+import { advance } from './clock';
 
-const $ = <T extends HTMLElement>(sel: string): T => {
-  const el = document.querySelector<T>(sel);
-  if (!el) throw new Error(`Falta el elemento ${sel}`);
-  return el;
-};
-
-const TOUR_SECONDS = 24;
-const TOUR_ALL_SECONDS = 45;
+const TOUR_SECONDS = 24; // por sistema
+const TOUR_ALL_SECONDS = 45; // final con todos a la vez
 const AMP_ONE = 0.16; // nivel de cada nota con un sistema
-const AMP_ALL = 0.035; // con los 30 sonando a la vez
-const MAX_NOTES_PER_FRAME = 4; // por planeta: a velocidades extremas no se programan cientos
+const AMP_ALL = 0.035; // con todos sonando a la vez
+const DECAY_ALL = 0.4; // colas más cortas con todos: ~150 voces a ×1 en vez de ~380
+const AUDIO_LATENCY = 0.05; // s: margen para programar en el futuro del reloj de audio
+// Un planeta que suena más de ~12 veces por segundo ya es un zumbido: no se programan
+// más notas suyas (el tope global de voces está en audio.ts).
+const MIN_NOTE_GAP = 0.08; // s entre notas del mismo planeta
+const SPEED_SNAP = 0.03; // en log10: imán alrededor de ×1 en el deslizador
 
-const info = $('#info');
-const select = $<HTMLSelectElement>('#system-select');
-const canvas = $<HTMLCanvasElement>('#canvas');
-const renderer = new Renderer(canvas);
+interface UiState {
+  current: number; // sistema visible
+  all: boolean; // todos a la vez
+  playing: boolean;
+  sound: boolean;
+  tour: boolean;
+  tourT: number; // s transcurridos en la etapa actual del recorrido
+  mult: number; // multiplicador sobre la velocidad recomendada (baseSpeed) de cada sistema
+  volume: number;
+  ambient: boolean;
+}
 
-const state = {
-  current: 0,
-  all: false,
-  playing: true,
-  sound: false,
-  tour: false,
-  tourT: 0,
-  mult: 1, // multiplicador sobre la velocidad base de cada sistema
-  volume: 0.7,
-  ambient: false,
-};
+const state: UiState = { current: 0, all: false, playing: true, sound: false, tour: false, tourT: 0, mult: 1, volume: 0.7, ambient: false };
 const tuning: Tuning = { kAuto: true, k: 1, scale: 'penta', top: 84 };
 let systems: System[] = [];
-let synth: Synth | null = null;
+let synth: Synth | null = null; // el AudioContext solo puede nacer tras un gesto del usuario
 
-const fmt = (n: number, d: number) => n.toLocaleString('es-ES', { minimumFractionDigits: d, maximumFractionDigits: d });
-const fmtDays = (p: number) => fmt(p, p < 100 ? 2 : p < 1000 ? 1 : 0);
-const esc = (s: string) => s.replace(/[&<>"]/g, (c) => `&#${c.charCodeAt(0)};`);
+const panel = new Panel();
+const canvas = $<HTMLCanvasElement>('#canvas');
+const renderer = new Renderer(canvas);
+const select = $<HTMLSelectElement>('#system-select');
+const tourProgress = $('#tour-progress');
+const buttons = {
+  sound: $('#btn-sound'),
+  play: $('#btn-play'),
+  tour: $('#btn-tour'),
+  all: $('#btn-all'),
+};
 
-// ── Panel del sistema ────────────────────────────────────────────────
-function renderInfo(): void {
-  if (state.all) {
-    const n = systems.reduce((a, s) => a + s.planets.length, 0);
-    info.innerHTML = `<h2>Los 30 a la vez</h2>
-      <p class="star">${n} planetas</p><p class="dist">Cada sistema a su propia velocidad</p>
-      <p class="fact">Haz clic en un sistema para escucharlo solo</p>`;
-    return;
-  }
-  const sys = systems[state.current];
-  const wide = sys.planets.some((p) => p.name.length > 2);
-  info.innerHTML = `<h2>${esc(sys.name)}</h2>
-    <p class="star">${esc(sys.star)}</p><p class="dist">${esc(sys.dist)}</p>
-    <p class="fact">${esc(sys.fact)}</p>
-    <div class="badges">${sys.inRhythm ? '<span class="badge">en ritmo</span>' : ''}${
-      sys.compressed
-        ? '<span class="badge dim" title="La órbita exterior está más de 7 veces más lejos que la interior: se comprimen para que quepan">escala comprimida</span>'
-        : ''
-    }</div>
-    <ul class="planets${wide ? ' wide' : ''}">${sys.planets
-      .map(
-        (p, i) => `<li data-i="${i}" style="--c:${p.color}">
-          <span class="name">${esc(p.name)}</span>
-          <span class="period">${fmtDays(p.period)} días</span>
-          <span class="ratio">${p.ratio ? `≈ ${p.ratio}` : ''}</span>
-          <span class="note" title="${fmt(p.freq, 1)} Hz">${p.freq < 20 ? 'inaudible' : noteName(p.midi)}</span>
-        </li>`,
-      )
-      .join('')}</ul>`;
+// ── Refresco de la interfaz ──────────────────────────────────────────
+const currentSystem = () => systems[state.current];
+const activeSystems = () => (state.all ? systems : [currentSystem()]);
+
+function showTuning(): void {
+  panel.showTuning({ sys: currentSystem(), all: state.all, mult: state.mult, tuning, volume: state.volume });
 }
 
-function flashRow(i: number): void {
-  const li = info.querySelector<HTMLElement & { _t?: number }>(`li[data-i="${i}"]`);
-  if (!li) return;
-  li.classList.add('hit');
-  clearTimeout(li._t);
-  li._t = window.setTimeout(() => li.classList.remove('hit'), 140);
-}
-
-// ── Mesa de afinación ────────────────────────────────────────────────
-function renderTuning(): void {
-  const sys = systems[state.current];
-  const dps = sys.baseSpeed * state.mult;
-  const rate = state.all ? `velocidad × ${fmt(state.mult, state.mult < 10 ? 2 : 0)}` : `1 segundo = ${fmt(dps, dps < 10 ? 1 : 0)} días`;
-  $('#speed-out').textContent = rate;
-  $('#rate').textContent = rate;
-  // En la cuadrícula pisaría la etiqueta del último sistema; ya está en la mesa de afinación.
-  $('#rate').hidden = state.all;
-  $<HTMLInputElement>('#speed').value = String(Math.log10(state.mult));
-  $<HTMLButtonElement>('#speed-reset').disabled = state.mult === 1;
-
-  const kInput = $<HTMLInputElement>('#k');
-  kInput.disabled = tuning.kAuto;
-  // En auto con los 30 no hay un k único: cada sistema tiene el suyo.
-  const k = tuning.kAuto ? (state.all ? null : sys.k) : tuning.k;
-  if (k !== null) kInput.value = String(k);
-  $('#k-out').textContent = k === null ? 'k auto' : `k = ${fmt(k, 2)}`;
-  $('#k-hint').innerHTML =
-    k === null
-      ? `Cada sistema se comprime hasta caber en ${fmt(AUTO_SPAN / 12, 1)} octavas.`
-      : `Órbita el doble de rápida → nota <b>${fmt(12 * k, 1)}</b> semitonos más aguda${k === 1 ? ' (relación real)' : ''}.`;
-  $('#vol-out').textContent = `${Math.round(state.volume * 100)} %`;
-}
-
+// La afinación cambia notas y textos del panel: se recalcula y se repinta todo junto.
 function retune(): void {
   tune(systems, tuning);
-  renderInfo();
-  renderTuning();
+  if (state.all) panel.showAll(systems);
+  else panel.showSystem(currentSystem());
+  showTuning();
 }
 
 function sync(): void {
-  const press = (id: string, on: boolean) => $(id).setAttribute('aria-pressed', String(on));
-  press('#btn-all', state.all);
-  press('#btn-tour', state.tour);
-  press('#btn-play', !state.playing);
-  press('#btn-sound', state.sound);
-  $('#btn-play').textContent = state.playing ? 'Pausa' : 'Seguir';
-  $('#btn-sound').textContent = state.sound ? 'Silenciar' : 'Activar sonido';
+  const press = (btn: HTMLElement, on: boolean) => btn.setAttribute('aria-pressed', String(on));
+  press(buttons.all, state.all);
+  press(buttons.tour, state.tour);
+  press(buttons.play, !state.playing);
+  press(buttons.sound, state.sound);
+  buttons.play.textContent = state.playing ? 'Pausa' : 'Seguir';
+  buttons.sound.textContent = state.sound ? 'Silenciar' : 'Activar sonido';
   canvas.classList.toggle('pick', state.all);
   select.value = String(state.current);
   retune();
@@ -129,89 +83,91 @@ function choose(i: number, keepTour = false): void {
   state.all = false;
   state.tourT = 0;
   if (!keepTour) state.tour = false;
-  resetSystem(systems[state.current]);
+  resetSystem(currentSystem());
   sync();
 }
 
 function showAll(on: boolean): void {
   state.all = on;
   state.tourT = 0;
-  if (on) systems.forEach(resetSystem);
-  else resetSystem(systems[state.current]);
+  activeSystems().forEach(resetSystem);
+  sync();
+}
+
+function setSpeed(mult: number): void {
+  state.mult = mult;
+  showTuning();
+}
+
+function toggleSound(): void {
+  synth ??= new Synth(state.volume);
+  state.sound = !state.sound;
+  if (state.sound) void synth.ctx.resume();
+  synth.setDrone(state.sound && state.ambient, tuning.top);
   sync();
 }
 
 function bindControls(): void {
-  select.addEventListener('change', () => choose(Number(select.value)));
-  $('#btn-prev').addEventListener('click', () => choose(state.current - 1));
-  $('#btn-next').addEventListener('click', () => choose(state.current + 1));
-  $('#btn-play').addEventListener('click', () => {
+  const on = <T extends HTMLElement>(sel: string, type: string, fn: (el: T) => void) => {
+    const el = $<T>(sel);
+    el.addEventListener(type, () => fn(el));
+  };
+
+  on<HTMLSelectElement>('#system-select', 'change', (el) => choose(Number(el.value)));
+  on('#btn-prev', 'click', () => choose(state.current - 1));
+  on('#btn-next', 'click', () => choose(state.current + 1));
+  on('#btn-sound', 'click', toggleSound);
+  on('#btn-play', 'click', () => {
     state.playing = !state.playing;
     sync();
   });
-  $('#btn-restart').addEventListener('click', () => (state.all ? systems.forEach(resetSystem) : resetSystem(systems[state.current])));
-  $('#btn-all').addEventListener('click', () => {
+  on('#btn-restart', 'click', () => activeSystems().forEach(resetSystem));
+  on('#btn-all', 'click', () => {
     state.tour = false;
     showAll(!state.all);
   });
-  $('#btn-tour').addEventListener('click', () => {
+  on('#btn-tour', 'click', () => {
     state.tour = !state.tour;
-    if (state.tour) {
-      state.playing = true;
-      choose(0, true);
-    } else sync();
-  });
-  $('#btn-sound').addEventListener('click', () => {
-    // El AudioContext solo puede nacer tras un gesto del usuario.
-    synth ??= new Synth(state.volume);
-    state.sound = !state.sound;
-    if (state.sound) {
-      void synth.ctx.resume();
-      synth.setDrone(state.ambient, tuning.top);
-    } else synth.setDrone(false);
-    sync();
+    if (!state.tour) return sync();
+    state.playing = true;
+    choose(0, true);
   });
 
-  $<HTMLInputElement>('#speed').addEventListener('input', (e) => {
-    const v = Number((e.target as HTMLInputElement).value);
+  on<HTMLInputElement>('#speed', 'input', (el) => {
+    const v = Number(el.value);
     // Imán en ×1: sin él es casi imposible volver exactamente a la recomendada arrastrando.
-    state.mult = Math.abs(v) < 0.03 ? 1 : Math.pow(10, v);
-    renderTuning();
+    setSpeed(Math.abs(v) < SPEED_SNAP ? 1 : Math.pow(10, v));
   });
-  // ×1 es la velocidad recomendada de cada sistema (baseSpeed en systems.ts).
-  const resetSpeed = () => {
-    state.mult = 1;
-    renderTuning();
-  };
-  $('#speed-reset').addEventListener('click', resetSpeed);
-  $('#speed').addEventListener('dblclick', resetSpeed);
-  $<HTMLInputElement>('#k').addEventListener('input', (e) => {
-    tuning.k = Number((e.target as HTMLInputElement).value);
+  on('#speed-reset', 'click', () => setSpeed(1));
+  on('#speed', 'dblclick', () => setSpeed(1));
+
+  on<HTMLInputElement>('#k', 'input', (el) => {
+    tuning.k = Number(el.value);
     retune();
   });
-  $<HTMLInputElement>('#k-auto').addEventListener('change', (e) => {
-    tuning.kAuto = (e.target as HTMLInputElement).checked;
+  on<HTMLInputElement>('#k-auto', 'change', (el) => {
+    tuning.kAuto = el.checked;
     // Al pasar a manual se parte del k que tenía el sistema visible: sin saltos de afinación.
-    if (!tuning.kAuto) tuning.k = state.all ? 1 : systems[state.current].k;
+    if (!tuning.kAuto) tuning.k = state.all ? 1 : currentSystem().k;
     retune();
   });
-  $<HTMLSelectElement>('#scale').addEventListener('change', (e) => {
-    tuning.scale = (e.target as HTMLSelectElement).value as ScaleId;
+  on<HTMLSelectElement>('#scale', 'change', (el) => {
+    tuning.scale = el.value as ScaleId;
     retune();
   });
-  $<HTMLSelectElement>('#top').addEventListener('change', (e) => {
-    tuning.top = Number((e.target as HTMLSelectElement).value);
+  on<HTMLSelectElement>('#top', 'change', (el) => {
+    tuning.top = Number(el.value);
     retune();
-    if (synth && state.sound && state.ambient) synth.setDrone(true, tuning.top);
+    if (state.sound && state.ambient) synth?.setDrone(true, tuning.top); // el fondo sigue a la tónica
   });
-  $<HTMLInputElement>('#vol').addEventListener('input', (e) => {
-    state.volume = Number((e.target as HTMLInputElement).value);
+  on<HTMLInputElement>('#vol', 'input', (el) => {
+    state.volume = Number(el.value);
     synth?.setVolume(state.volume);
-    renderTuning();
+    showTuning();
   });
-  $<HTMLInputElement>('#ambient').addEventListener('change', (e) => {
-    state.ambient = (e.target as HTMLInputElement).checked;
-    if (synth && state.sound) synth.setDrone(state.ambient, tuning.top);
+  on<HTMLInputElement>('#ambient', 'change', (el) => {
+    state.ambient = el.checked;
+    if (state.sound) synth?.setDrone(state.ambient, tuning.top);
   });
 
   canvas.addEventListener('click', (e) => {
@@ -220,59 +176,52 @@ function bindControls(): void {
     const cell = renderer.cellAt(e.clientX - r.left, e.clientY - r.top);
     if (cell) choose(cell.index);
   });
+
   document.addEventListener('keydown', (e) => {
-    if ((e.target as HTMLElement).closest('input, select, textarea, button')) return;
+    const target = e.target as HTMLElement;
+    if (target.closest('input, select, textarea')) return;
     if (e.key === ' ') {
+      if (target.closest('button')) return; // el espacio ya pulsa el botón enfocado
       e.preventDefault();
-      $('#btn-play').click();
+      buttons.play.click();
     } else if (e.key === 'ArrowLeft') choose(state.current - 1);
     else if (e.key === 'ArrowRight') choose(state.current + 1);
   });
 }
 
-// ── Bucle: avanza el tiempo y programa una nota en cada cruce de la vertical ──
-// La nota se programa en el instante exacto del cruce dentro del frame (no al
-// inicio del frame), así el ritmo no baila con los 16 ms de cada fotograma.
+// ── Bucle ────────────────────────────────────────────────────────────
 let last = performance.now();
 function frame(now: number): void {
-  const dt = Math.min(0.1, (now - last) / 1000);
+  const dt = Math.min(0.1, (now - last) / 1000); // tras una pestaña oculta, no saltar de golpe
   last = now;
   if (state.playing) {
-    advance(dt, now);
-    if (state.tour) advanceTour(dt);
+    step(dt, now);
+    if (state.tour) stepTour(dt);
   }
-  $('#tour-progress').style.transform = `scaleX(${state.tour ? Math.min(1, state.tourT / (state.all ? TOUR_ALL_SECONDS : TOUR_SECONDS)) : 0})`;
+  const stage = state.all ? TOUR_ALL_SECONDS : TOUR_SECONDS;
+  tourProgress.style.transform = `scaleX(${state.tour ? Math.min(1, state.tourT / stage) : 0})`;
   renderer.draw(systems, state.current, state.all, state.mult, now);
   requestAnimationFrame(frame);
 }
 
-function advance(dt: number, now: number): void {
-  const audible = synth && state.sound;
-  const t0 = audible ? synth!.now + 0.05 : 0;
-  const active = state.all ? systems : [systems[state.current]];
-  active.forEach((sys, si) => {
-    const d0 = sys.t;
-    const d1 = d0 + dt * sys.baseSpeed * state.mult;
-    sys.planets.forEach((p, i) => {
-      const done = Math.floor(d1 / p.period);
-      if (done <= p.count) return;
-      for (let c = Math.max(p.count + 1, done - MAX_NOTES_PER_FRAME + 1); c <= done; c++) {
-        const frac = (c * p.period - d0) / (d1 - d0);
-        if (audible) {
-          const n = sys.planets.length;
-          const pan = state.all ? ((si % 6) / 5 - 0.5) * 1.2 : n > 1 ? (i / (n - 1) - 0.5) * 0.9 : 0;
-          synth!.bell(p.freq, t0 + frac * dt, state.all ? AMP_ALL : AMP_ONE, pan);
-        }
-        p.flash = now + frac * dt * 1000;
-      }
-      p.count = done;
-      if (!state.all) flashRow(i);
-    });
-    sys.t = d1;
+function step(dt: number, now: number): void {
+  const audio = state.sound ? synth : null;
+  const t0 = audio ? audio.now + AUDIO_LATENCY : 0;
+  advance(activeSystems(), dt, state.mult, (sys, si, p, pi, frac) => {
+    p.flash = now + frac * dt * 1000;
+    if (!state.all) panel.flash(pi);
+    if (!audio) return;
+    const when = t0 + frac * dt;
+    if (when - p.lastNote < MIN_NOTE_GAP) return;
+    // Estéreo: con un sistema, los planetas de izquierda (rápidos) a derecha (lentos);
+    // con todos, cada columna de la cuadrícula en su sitio.
+    const n = sys.planets.length;
+    const pan = state.all ? ((si % 6) / 5 - 0.5) * 1.2 : n > 1 ? (pi / (n - 1) - 0.5) * 0.9 : 0;
+    if (audio.bell(p.freq, when, state.all ? AMP_ALL : AMP_ONE, pan, state.all ? DECAY_ALL : 1)) p.lastNote = when;
   });
 }
 
-function advanceTour(dt: number): void {
+function stepTour(dt: number): void {
   state.tourT += dt;
   if (state.tourT < (state.all ? TOUR_ALL_SECONDS : TOUR_SECONDS)) return;
   if (state.all) {
@@ -284,23 +233,19 @@ function advanceTour(dt: number): void {
 
 // ── Arranque ─────────────────────────────────────────────────────────
 function fillSelects(): void {
-  let html = '';
-  let group = 0;
+  // Un <optgroup> por número de planetas (los datos vienen ordenados así).
+  const groups = new Map<number, string>();
   systems.forEach((s, i) => {
-    if (s.planets.length !== group) {
-      if (group) html += '</optgroup>';
-      group = s.planets.length;
-      html += `<optgroup label="${group} planetas">`;
-    }
-    html += `<option value="${i}">${esc(s.name)}</option>`;
+    const n = s.planets.length;
+    groups.set(n, (groups.get(n) ?? '') + `<option value="${i}">${esc(s.name)}</option>`);
   });
-  select.innerHTML = `${html}</optgroup>`;
+  select.innerHTML = [...groups].map(([n, opts]) => `<optgroup label="${n} planetas">${opts}</optgroup>`).join('');
   select.disabled = false;
 
-  let tops = '';
-  for (let m = 96; m >= 60; m--) tops += `<option value="${m}">${noteName(m)} · ${Math.round(mtof(m))} Hz</option>`;
   const top = $<HTMLSelectElement>('#top');
-  top.innerHTML = tops;
+  let opts = '';
+  for (let m = 96; m >= 60; m--) opts += `<option value="${m}">${noteName(m)} · ${Math.round(mtof(m))} Hz</option>`;
+  top.innerHTML = opts;
   top.value = String(tuning.top);
 }
 
@@ -315,5 +260,5 @@ loadSystems()
   })
   .catch((err: unknown) => {
     console.error(err);
-    info.innerHTML = '<p class="error">No se pudieron cargar los datos. Recarga la página.</p>';
+    panel.showError();
   });

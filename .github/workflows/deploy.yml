@@ -7,13 +7,15 @@ on:
     branches: [main]
   workflow_dispatch:
 
+# Mínimo para todos los jobs; deploy amplía lo suyo (así los PRs no reciben
+# permiso de escritura en Pages).
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
+# Un grupo por rama: con un grupo único compartido, la comprobación de un PR
+# cancelaba la de otro o, peor, un despliegue de main en curso.
 concurrency:
-  group: pages
+  group: pages-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -41,11 +43,12 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      # Solo dependencias de producción: el ruido de build (mapshaper) no
-      # llega al bundle. Falla si algo que sí se sirve tiene vulnerabilidad.
-      - run: npm audit --omit=dev --audit-level=high
+      # Sin dependencias de producción, --omit=dev no auditaría nada: se audita
+      # todo porque Vite y TypeScript sí se ejecutan al generar lo que se sirve.
+      - run: npm audit --audit-level=high
       - run: npm run build
-      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5
+      - if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5
         with:
           path: dist
 
@@ -54,6 +57,9 @@ jobs:
     if: github.event_name != 'pull_request'
     needs: build
     runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

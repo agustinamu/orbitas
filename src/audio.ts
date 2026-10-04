@@ -8,6 +8,11 @@ const PARTIALS: [number, number, number][] = [
   [2, 0.28, 1.2],
   [3.01, 0.08, 0.5],
 ];
+const BELL_TAIL = Math.max(...PARTIALS.map(([, , d]) => d)) + 0.05;
+
+// Tope de notas sonando a la vez (cada una son 7 nodos). A velocidad ×1 un sistema
+// llega como mucho a ~33; solo se alcanza con todos a la vez o a velocidades extremas.
+const MAX_VOICES = 160;
 
 export class Synth {
   readonly ctx: AudioContext;
@@ -15,6 +20,7 @@ export class Synth {
   private dry: GainNode;
   private reverb: ConvolverNode;
   private drone: { gain: GainNode; oscs: OscillatorNode[] } | null = null;
+  private voiceEnds: number[] = []; // fin de cada nota sonando, en orden de inicio
 
   constructor(volume: number) {
     const ctx = new AudioContext();
@@ -38,22 +44,30 @@ export class Synth {
     this.master.gain.setTargetAtTime(v, this.ctx.currentTime, 0.05);
   }
 
-  bell(freq: number, when: number, amp: number, pan: number): void {
-    if (freq < 20 || freq > 12000) return;
+  /** `decay` escala la duración (las colas largas se amontonan con muchos sistemas). Devuelve si sonó. */
+  bell(freq: number, when: number, amp: number, pan: number, decay = 1): boolean {
+    if (freq < 20 || freq > 12000) return false;
     const ctx = this.ctx;
+    // Con latencia constante, las notas terminan casi en el orden en que empiezan (salvo al
+    // cambiar de modo, por la cola distinta): basta para un tope aproximado sin ordenar.
+    while (this.voiceEnds.length && this.voiceEnds[0] < ctx.currentTime) this.voiceEnds.shift();
+    if (this.voiceEnds.length >= MAX_VOICES) return false;
+    this.voiceEnds.push(when + BELL_TAIL * decay);
     const out = new StereoPannerNode(ctx, { pan });
     out.connect(this.dry);
     out.connect(this.reverb);
-    for (const [mul, level, decay] of PARTIALS) {
+    for (const [mul, level, seconds] of PARTIALS) {
+      const end = when + seconds * decay;
       const osc = new OscillatorNode(ctx, { frequency: freq * mul });
       const g = new GainNode(ctx, { gain: 0 });
       g.gain.setValueAtTime(0, when);
       g.gain.linearRampToValueAtTime(amp * level, when + 0.006);
-      g.gain.exponentialRampToValueAtTime(0.0001, when + decay);
+      g.gain.exponentialRampToValueAtTime(0.0001, end);
       osc.connect(g).connect(out);
       osc.start(when);
-      osc.stop(when + decay + 0.05);
+      osc.stop(end + 0.05);
     }
+    return true;
   }
 
   // Tónica, quinta y octava graves con un paso bajo: colchón suave en la tonalidad elegida.

@@ -9,8 +9,10 @@ export interface Cell {
   h: number;
 }
 
+const TAU = Math.PI * 2;
 // Duración del destello tras cruzar la vertical (constante de tiempo, s).
 const FLASH_TAU = 0.35;
+const TRAIL_ALPHA = 0.85;
 
 const BG_STARS = Array.from({ length: 260 }, () => ({
   x: Math.random(),
@@ -105,7 +107,6 @@ export class Renderer {
 
   private system(sys: System, cx: number, cy: number, R: number, mult: number, now: number, mini: boolean): void {
     const g = this.g;
-    const TAU = Math.PI * 2;
 
     // Vertical: cada planeta suena al cruzarla.
     g.strokeStyle = 'rgba(236,229,211,0.25)';
@@ -144,17 +145,19 @@ export class Renderer {
       g.stroke();
 
       // Estela: medio segundo de recorrido, entre 0,25 rad y ~100°; crece al arrancar.
+      // Un solo trazo con degradado cónico centrado en la estrella (antes, N trazos
+      // de opacidad decreciente: ~1.100 arcos por fotograma con los 30 sistemas).
       const turnsPerSec = (sys.baseSpeed * mult) / p.period;
       const trail = Math.min(Math.PI * 0.55, Math.max(0.25, turnsPerSec * Math.PI)) * Math.min(1, (sys.t / p.period) * 4);
-      const N = mini ? 8 : 24;
-      g.lineCap = 'round';
+      const fade = g.createConicGradient(th, cx, cy);
+      fade.addColorStop(0, rgba(p.color, TRAIL_ALPHA));
+      fade.addColorStop(trail / TAU, rgba(p.color, 0));
+      g.strokeStyle = fade;
+      g.lineCap = 'butt';
       g.lineWidth = mini ? 1.5 : Math.max(2, R * 0.009);
-      for (let s = 0; s < N; s++) {
-        g.strokeStyle = rgba(p.color, 0.85 * (1 - s / N));
-        g.beginPath();
-        g.arc(cx, cy, r, th + (trail * s) / N, th + (trail * (s + 1)) / N);
-        g.stroke();
-      }
+      g.beginPath();
+      g.arc(cx, cy, r, th, th + trail);
+      g.stroke();
 
       const x = cx + r * Math.cos(th);
       const y = cy + r * Math.sin(th);
