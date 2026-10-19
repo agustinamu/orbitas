@@ -172,6 +172,12 @@ optgroup {
   background: var(--accent);
 }
 
+/* Anillo separado del botón (coral sobre --bg, 5,8): pegado al borde no se veía sobre un
+   conmutador pulsado, que ya es coral de relleno y de borde, ni cambiaba el del sonido. */
+#topbar button:focus-visible {
+  outline-offset: 2px;
+}
+
 #btn-prev,
 #btn-next {
   min-width: 2.5rem;
@@ -265,16 +271,21 @@ optgroup {
   font-variant-numeric: tabular-nums;
 }
 
-/* Colores de planeta locales (--c), como los de mapa en flagmaps. */
+/* Colores de planeta locales (--c), como los de mapa en flagmaps.
+   Al sonar, la fila se marca con una barra a la izquierda y no con fondo: teñir con --c el
+   fondo de un texto en --c lo bajaba de 4,5:1 (carmín 3,5; coral de la resonancia 3,6), y con
+   planetas rápidos la fila pasa casi todo el tiempo marcada. La barra cuenta en el sangrado
+   (0,4rem) para que el texto siga alineado con el título. */
 .planets li {
   display: grid;
   grid-template-columns: 1.4rem 7.2rem 3.4rem 1fr;
   align-items: baseline;
   gap: 0.6rem;
-  padding: 0.15rem 0.4rem;
+  padding: 0.15rem 0.4rem 0.15rem calc(0.4rem - 3px);
   margin-left: -0.4rem;
+  border-left: 3px solid transparent;
   color: var(--c);
-  transition: background-color 0.6s;
+  transition: border-left-color 0.6s;
 }
 
 .planets.wide li {
@@ -282,7 +293,7 @@ optgroup {
 }
 
 .planets li.hit {
-  background: color-mix(in srgb, var(--c) 22%, transparent);
+  border-left-color: var(--c);
   transition: none;
 }
 
