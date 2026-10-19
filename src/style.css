@@ -145,11 +145,18 @@ optgroup {
   font-style: normal;
 }
 
-#topbar button:hover,
+/* Los botones son transparentes en reposo: el rgba suelto tiñe lo que tengan debajo. */
+#topbar button:hover {
+  border-color: var(--accent);
+  background: rgba(var(--accent-rgb), 0.08);
+}
+
+/* Los select tienen fondo --surface: el tinte va apilado sobre él. Con el rgba suelto, el de
+   la cabecera (que no tiene fondo) se componía sobre --bg y se oscurecía en hover. */
 #topbar select:hover:not(:disabled),
 #tuning select:hover {
   border-color: var(--accent);
-  background: rgba(var(--accent-rgb), 0.08);
+  background: linear-gradient(rgba(var(--accent-rgb), 0.08), rgba(var(--accent-rgb), 0.08)), var(--surface);
 }
 
 /* Acción destacada: el sonido (sin él la herramienta no hace su trabajo). Apagado va en
