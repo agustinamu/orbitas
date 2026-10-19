@@ -192,7 +192,10 @@ function bindControls(): void {
 // ── Bucle ────────────────────────────────────────────────────────────
 let last = performance.now();
 function frame(now: number): void {
-  const dt = Math.min(0.1, (now - last) / 1000); // tras una pestaña oculta, no saltar de golpe
+  // La marca de rAF es el inicio del fotograma y puede ser anterior al performance.now()
+  // de arriba (medido: de 1 a 7 ms). Sin el Math.max el primer dt salía negativo, el
+  // tiempo de la simulación retrocedía y la estela pedía un degradado fuera de [0, 1].
+  const dt = Math.min(0.1, Math.max(0, now - last) / 1000); // tras una pestaña oculta, no saltar de golpe
   last = now;
   if (state.playing) {
     step(dt, now);

@@ -147,8 +147,12 @@ export class Renderer {
       // Estela: medio segundo de recorrido, entre 0,25 rad y ~100°; crece al arrancar.
       // Un solo trazo con degradado cónico centrado en la estrella (antes, N trazos
       // de opacidad decreciente: ~1.100 arcos por fotograma con los 30 sistemas).
+      // El crecimiento va acotado a [0, 1] para que el offset del degradado (trail / TAU)
+      // quede siempre en [0, 0,275]: addColorStop lanza IndexSizeError fuera de [0, 1] y la
+      // excepción paraba el bucle de animación con el cielo vacío.
       const turnsPerSec = (sys.baseSpeed * mult) / p.period;
-      const trail = Math.min(Math.PI * 0.55, Math.max(0.25, turnsPerSec * Math.PI)) * Math.min(1, (sys.t / p.period) * 4);
+      const grow = Math.min(1, Math.max(0, (sys.t / p.period) * 4));
+      const trail = Math.min(Math.PI * 0.55, Math.max(0.25, turnsPerSec * Math.PI)) * grow;
       const fade = g.createConicGradient(th, cx, cy);
       fade.addColorStop(0, rgba(p.color, TRAIL_ALPHA));
       fade.addColorStop(trail / TAU, rgba(p.color, 0));
