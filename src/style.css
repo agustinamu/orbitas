@@ -1,5 +1,5 @@
 /* ── Pizarra cartográfica: pizarra verde, tiza y coral ─────────────── */
-/* Paleta canónica del portal (docs/guia-estilo.md §2 en el repo ekain): mismos nombres y valores en todos los repos.
+/* Paleta canónica: §2 de la guía de estilo del portal (repo privado ekain-docs). Mismos nombres y valores en todos los repos.
    Nombres por rol; contrastes WCAG medidos sobre --bg / --surface. */
 :root {
   color-scheme: dark;
