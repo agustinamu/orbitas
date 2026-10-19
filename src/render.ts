@@ -74,7 +74,7 @@ export class Renderer {
     g.clearRect(0, 0, w, h);
     for (const s of BG_STARS) {
       const tw = this.reduceMotion ? 0.6 : 0.45 + 0.35 * Math.sin(now / 1400 + s.phase);
-      g.fillStyle = `rgba(236,229,211,${(0.3 * s.size * tw).toFixed(3)})`;
+      g.fillStyle = `rgba(241,239,230,${(0.3 * s.size * tw).toFixed(3)})`; // --text
       g.fillRect(s.x * w, s.y * h, s.size, s.size);
     }
 
@@ -91,7 +91,9 @@ export class Renderer {
     const cw = w / cols;
     const ch = h / rows;
     const R = Math.min(cw, ch) * 0.36;
-    g.font = `500 ${Math.max(10, Math.min(12, cw / 11))}px 'IBM Plex Mono', monospace`;
+    // La familia de --sans. No hace falta esperar a document.fonts.ready: se repinta en
+    // cada fotograma y la cuadrícula no es la vista inicial, así que Archivo ya está cargada.
+    g.font = `500 ${Math.max(10, Math.min(12, cw / 11))}px Archivo, system-ui, sans-serif`;
     g.textAlign = 'center';
     systems.forEach((sys, i) => {
       const x0 = (i % cols) * cw;
@@ -100,7 +102,7 @@ export class Renderer {
       const cx = x0 + cw / 2;
       const cy = y0 + ch * 0.45;
       this.system(sys, cx, cy, R, mult, now, true);
-      g.fillStyle = 'rgba(154,147,127,0.95)'; // --paper-dim
+      g.fillStyle = 'rgba(183,189,179,0.95)'; // --text-dim
       g.fillText(sys.name, cx, cy + R + Math.min(16, ch * 0.12));
     });
   }
@@ -109,7 +111,7 @@ export class Renderer {
     const g = this.g;
 
     // Vertical: cada planeta suena al cruzarla.
-    g.strokeStyle = 'rgba(236,229,211,0.25)';
+    g.strokeStyle = 'rgba(241,239,230,0.25)'; // --line-soft
     g.lineWidth = 1;
     g.beginPath();
     g.moveTo(cx, cy);

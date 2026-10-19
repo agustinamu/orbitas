@@ -45,7 +45,12 @@ export interface System extends Omit<SystemData, 'planets'> {
 }
 
 // Colores locales de los planetas (como los de mapa en flagmaps: no son paleta del portal).
-const COLORS = ['#e0564a', '#3fbf8c', '#b25cc9', '#e3b14a', '#5a9be6', '#ef86b4', '#9cc94f', '#f08c42'];
+// También son color de texto en la lista del panel: todos ≥ 4,5:1 sobre --bg (#1e2925).
+// Con la pizarra se cambiaron tres: el rojo #e0564a y el naranja #f08c42 casi eran el
+// coral de --accent (ΔE2000 12) y el rojo y el púrpura #b25cc9 bajaban de 4,5:1. El rojo
+// pasa a carmín (ΔE 16,5 del coral), el púrpura solo se aclara y el naranja, sin hueco
+// entre coral y oro, pasa a cian (el tono que faltaba).
+const COLORS = ['#fd4b6b', '#3fbf8c', '#c36bd9', '#e3b14a', '#5a9be6', '#ef86b4', '#9cc94f', '#3fc8dc'];
 
 // Resonancias que se marcan «≈ p:q». Con 2 % de tolerancia salen las mismas marcas
 // que en el vídeo: YZ Ceti (1,5 % de 3:2) sí, Gliese 581 (2,3 % de 5:3) no.

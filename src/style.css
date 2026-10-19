@@ -1,16 +1,19 @@
-/* ── Sala de cartografía: tinta nocturna, latón y papel ─────────────── */
-/* Paleta canónica del portal (docs/guia-estilo.md §2 en el repo ekain): mismos nombres y valores en todos los repos. */
+/* ── Pizarra cartográfica: pizarra verde, tiza y coral ─────────────── */
+/* Paleta canónica del portal (docs/guia-estilo.md §2 en el repo ekain): mismos nombres y valores en todos los repos.
+   Nombres por rol; contrastes WCAG medidos sobre --bg / --surface. */
 :root {
   color-scheme: dark;
-  --ink: #0b131c;
-  --ink-2: #101b27;
-  --brass: #d2a14c;
-  --brass-soft: #8a6f3d;
-  --paper: #ece5d3;
-  --paper-dim: #9a937f;
-  --bad: #d47d6a;
-  --display: 'Fraunces', 'Iowan Old Style', Georgia, serif;
-  --mono: 'IBM Plex Mono', 'Courier New', monospace;
+  --bg: #1e2925; /* fondo de página */
+  --surface: #2a3732; /* tarjetas, inputs, barras, paneles */
+  --text: #f1efe6; /* 13,0 / 10,8 */
+  --text-dim: #b7bdb3; /* 7,8 / 6,5 */
+  --line: #b7bdb3; /* bordes en reposo */
+  --line-soft: rgba(241, 239, 230, 0.25); /* separadores internos */
+  --accent: #e8866b; /* coral: 5,8 / 4,8; texto var(--bg) encima, 5,8 */
+  --accent-rgb: 232, 134, 107;
+  --bad: #ff9fb5; /* 7,8 / 6,4 */
+  --sans: 'Archivo', system-ui, sans-serif;
+  --serif: 'Instrument Serif', Georgia, serif; /* solo en itálica */
 }
 
 * {
@@ -26,13 +29,14 @@ body {
   height: 100%;
 }
 
+/* App: fondo liso (la cuadrícula de meridianos es solo de portada y hubs). */
 body {
   margin: 0;
   display: flex;
   flex-direction: column;
-  background: radial-gradient(ellipse at 50% -20%, rgba(210, 161, 76, 0.08), transparent 60%), var(--ink);
-  color: var(--paper);
-  font-family: var(--mono);
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
 }
 
 button,
@@ -43,8 +47,12 @@ input {
 }
 
 :focus-visible {
-  outline: 2px solid var(--brass);
+  outline: 2px solid var(--accent);
   outline-offset: -1px;
+}
+
+a:focus-visible {
+  outline-offset: 2px;
 }
 
 /* ── Cabecera ───────────────────────────────────────────────────────── */
@@ -54,30 +62,33 @@ input {
   flex-wrap: wrap;
   gap: 0.6rem 1.5rem;
   padding: 0.7rem 1.4rem;
-  border-bottom: 1px solid var(--brass-soft);
+  border-bottom: 1px solid var(--line);
 }
 
 .brand h1 {
   margin: 0;
   white-space: nowrap;
-  font-family: var(--display);
-  font-weight: 500;
+  font-weight: 800;
+  font-stretch: 118%;
   font-size: 1.45rem;
-  letter-spacing: 0.02em;
+  letter-spacing: -0.01em;
 }
 
 .brand .accent {
+  font-family: var(--serif);
   font-style: italic;
-  font-weight: 300;
-  color: var(--brass);
+  font-weight: 400;
+  color: var(--accent);
 }
 
 .brand .sub {
   display: block;
   font-size: 0.62rem;
-  letter-spacing: 0.34em;
+  font-weight: 600;
+  font-stretch: 112%;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--paper-dim);
+  color: var(--text-dim);
 }
 
 .controls {
@@ -91,7 +102,7 @@ input {
 .controls .sep {
   width: 1px;
   align-self: stretch;
-  background: rgba(210, 161, 76, 0.25);
+  background: var(--line-soft);
   margin-inline: 0.3rem;
 }
 
@@ -101,69 +112,70 @@ input {
   min-height: 2.5rem;
   padding: 0.45rem 0.8rem;
   background: transparent;
-  border: 1px solid var(--brass-soft);
+  border: 1.5px solid var(--line);
   font-size: 0.72rem;
-  letter-spacing: 0.08em;
   cursor: pointer;
   transition: border-color 0.15s, background 0.15s, color 0.15s;
 }
 
 #topbar button {
+  font-weight: 600;
+  font-stretch: 112%;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
+/* Los select muestran datos (nombres de sistema, notas): texto de cuerpo, sin rótulo. */
 #topbar select,
 #tuning select {
-  background: var(--ink-2);
+  background: var(--surface);
+  font-size: 0.8rem;
 }
 
 /* La lista desplegable nativa (GTK en Linux) se pinta en blanco aunque haya
    color-scheme: dark; con el color heredado del select quedaba texto claro sobre blanco. */
 option,
 optgroup {
-  background: var(--ink-2);
-  color: var(--paper);
+  background: var(--surface);
+  color: var(--text);
 }
 
 optgroup {
-  color: var(--brass);
+  color: var(--accent);
   font-style: normal;
 }
 
 #topbar button:hover,
 #topbar select:hover:not(:disabled),
 #tuning select:hover {
-  border-color: var(--brass);
-  background: rgba(210, 161, 76, 0.08);
+  border-color: var(--accent);
+  background: rgba(var(--accent-rgb), 0.08);
 }
 
+/* Acción destacada: el sonido (sin él la herramienta no hace su trabajo). Apagado va en
+   coral sin relleno; encendido, relleno como cualquier conmutador activo. Antes iba
+   relleno al estar apagado, y con el relleno como marca de «activo» se leía al revés. */
+#topbar button.accent {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+#topbar button.accent:hover {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+/* Después de .accent, a igual especificidad, para que el activo gane también en el sonido. */
 #topbar button[aria-pressed='true'] {
-  border-color: var(--brass);
-  color: var(--brass);
-  background: rgba(210, 161, 76, 0.15);
+  border-color: var(--accent);
+  color: var(--bg);
+  background: var(--accent);
 }
 
 #btn-prev,
 #btn-next {
   min-width: 2.5rem;
   font-size: 1rem;
-}
-
-/* Acción destacada: el sonido (sin él la herramienta no hace su trabajo). */
-#topbar button.accent {
-  border-color: var(--brass);
-  color: var(--brass);
-}
-
-#topbar button.accent:hover,
-#topbar button.accent[aria-pressed='false'] {
-  background: var(--brass);
-  color: var(--ink);
-}
-
-#topbar button.accent[aria-pressed='true'] {
-  background: transparent;
-  color: var(--brass);
 }
 
 /* ── Escenario: ficha a la izquierda, órbitas a la derecha (como el vídeo) ── */
@@ -186,10 +198,11 @@ optgroup {
 
 #info h2 {
   margin: 0 0 0.5rem;
-  font-family: var(--display);
-  font-weight: 500;
+  font-weight: 800;
+  font-stretch: 115%;
   font-size: clamp(1.9rem, 3vw, 2.6rem);
   line-height: 1.05;
+  letter-spacing: -0.01em;
   text-wrap: balance;
 }
 
@@ -197,16 +210,17 @@ optgroup {
 #info .dist {
   margin: 0;
   font-size: 1rem;
-  color: var(--paper-dim);
+  color: var(--text-dim);
 }
 
+/* Instrument Serif tiene el ojo más pequeño que Archivo: algo más de cuerpo para que pese igual. */
 #info .fact {
   margin: 0.5rem 0 0.2rem;
-  font-family: var(--display);
+  font-family: var(--serif);
   font-style: italic;
-  font-size: 1.15rem;
-  line-height: 1.3;
-  color: var(--brass);
+  font-size: 1.3rem;
+  line-height: 1.25;
+  color: var(--accent);
   text-wrap: balance;
 }
 
@@ -227,17 +241,18 @@ optgroup {
 
 .badge {
   padding: 0.3rem 0.55rem;
-  border: 1px solid var(--brass);
-  color: var(--brass);
+  border: 1.5px solid var(--accent);
+  color: var(--accent);
   font-size: 0.7rem;
-  font-weight: 600;
+  font-weight: 700;
+  font-stretch: 112%;
   letter-spacing: 0.14em;
   text-transform: uppercase;
 }
 
 .badge.dim {
-  border-color: var(--brass-soft);
-  color: var(--paper-dim);
+  border-color: var(--line);
+  color: var(--text-dim);
   cursor: help;
 }
 
@@ -278,13 +293,13 @@ optgroup {
 
 .planets .ratio {
   font-size: 0.8rem;
-  color: var(--brass);
+  color: var(--accent);
 }
 
 .planets .note {
   justify-self: end;
   font-size: 0.75rem;
-  color: var(--paper-dim);
+  color: var(--text-dim);
 }
 
 #sky {
@@ -309,7 +324,7 @@ optgroup {
   bottom: 0.4rem;
   margin: 0;
   font-size: 0.85rem;
-  color: var(--paper-dim);
+  color: var(--text-dim);
   font-variant-numeric: tabular-nums;
   pointer-events: none;
 }
@@ -320,7 +335,7 @@ optgroup {
   right: 0;
   bottom: 0;
   height: 2px;
-  background: var(--brass);
+  background: var(--accent);
   transform-origin: left;
   transform: scaleX(0);
 }
@@ -332,31 +347,42 @@ optgroup {
   gap: 0.8rem 1.6rem;
   margin: 0.6rem 1.4rem 0;
   padding: 0.9rem 1.1rem;
-  background: var(--ink-2);
-  border: 1px solid var(--brass-soft);
+  background: var(--surface);
+  border: 1.5px solid var(--line);
 }
 
+/* Cada campo son tres filas (rótulo, control, nota) compartidas con los de su misma fila:
+   con Archivo ancha los rótulos largos se parten en dos líneas y, sin subgrid, los
+   controles de al lado quedaban desalineados. */
 #tuning .field {
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
+  display: grid;
+  grid-row: span 3;
+  grid-template-rows: subgrid;
+  row-gap: 0.3rem;
   min-width: 0;
 }
 
 #tuning .field > label:first-child {
+  align-self: end;
   display: flex;
   justify-content: space-between;
   gap: 0.5rem;
   font-size: 0.68rem;
+  font-weight: 600;
+  font-stretch: 112%;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--paper-dim);
+  color: var(--text-dim);
 }
 
+/* El valor es un dato, no parte del rótulo: sin ensanchar ni espaciar, y sin partirse
+   («k =» arriba y «1,00» abajo) cuando el rótulo ancho ocupa la línea. */
 #tuning output {
-  color: var(--brass);
+  color: var(--accent);
+  font-stretch: 100%;
   letter-spacing: 0;
   text-transform: none;
+  white-space: nowrap;
   font-variant-numeric: tabular-nums;
 }
 
@@ -364,12 +390,12 @@ optgroup {
   margin: 0;
   font-size: 0.72rem;
   line-height: 1.4;
-  color: var(--paper-dim);
+  color: var(--text-dim);
 }
 
 #tuning .hint b {
-  font-weight: 500;
-  color: var(--paper);
+  font-weight: 600;
+  color: var(--text);
 }
 
 #tuning .row {
@@ -387,21 +413,27 @@ optgroup {
   white-space: nowrap;
 }
 
+/* En la fila de notas (volumen), arriba como las notas vecinas y no centrada en la fila. */
+#tuning .field > .check {
+  align-self: start;
+}
+
 #tuning button.mini {
   padding: 0.3rem 0.55rem;
   background: transparent;
-  border: 1px solid var(--brass-soft);
+  border: 1.5px solid var(--line);
   font-size: 0.68rem;
-  letter-spacing: 0.06em;
+  font-weight: 500;
+  letter-spacing: 0.04em;
   white-space: nowrap;
   cursor: pointer;
   transition: border-color 0.15s, background 0.15s, color 0.15s;
 }
 
+/* El texto no pasa a coral: sobre el velo coral de --surface se queda en 4,3:1. */
 #tuning button.mini:hover:not(:disabled) {
-  border-color: var(--brass);
-  background: rgba(210, 161, 76, 0.08);
-  color: var(--brass);
+  border-color: var(--accent);
+  background: rgba(var(--accent-rgb), 0.08);
 }
 
 #tuning button.mini:disabled {
@@ -411,7 +443,7 @@ optgroup {
 
 #tuning input[type='range'] {
   width: 100%;
-  accent-color: var(--brass);
+  accent-color: var(--accent);
 }
 
 #tuning input[type='range']:disabled {
@@ -419,7 +451,7 @@ optgroup {
 }
 
 #tuning input[type='checkbox'] {
-  accent-color: var(--brass);
+  accent-color: var(--accent);
 }
 
 /* ── Barra de estado ───────────────────────────────────────────────── */
@@ -429,44 +461,49 @@ optgroup {
   gap: 0.3rem 1.4rem;
   padding: 0.6rem 1.4rem;
   font-size: 0.68rem;
+  font-weight: 600;
+  font-stretch: 112%;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--paper-dim);
+  color: var(--text-dim);
 }
 
 #statusbar b {
-  font-weight: 600;
-  color: var(--paper);
+  font-weight: 800;
+  color: var(--text);
 }
 
 #statusbar .back {
-  color: var(--paper-dim);
+  color: var(--text-dim);
   text-decoration: none;
 }
 
 #statusbar .back:hover,
 #statusbar .back:focus-visible {
-  color: var(--brass);
+  color: var(--accent);
 }
 
+/* Los créditos son frase, no rótulo: cuerpo normal. */
 #statusbar .credit {
   margin-left: auto;
+  font-weight: 400;
+  font-stretch: 100%;
   text-transform: none;
   letter-spacing: 0.04em;
 }
 
 #statusbar .credit a {
-  color: var(--paper);
+  color: var(--text);
   text-decoration: underline;
-  text-decoration-color: var(--brass-soft);
+  text-decoration-color: var(--line);
   text-underline-offset: 0.2em;
   transition: color 0.15s, text-decoration-color 0.15s;
 }
 
 #statusbar .credit a:hover,
 #statusbar .credit a:focus-visible {
-  color: var(--brass);
-  text-decoration-color: var(--brass);
+  color: var(--accent);
+  text-decoration-color: var(--accent);
 }
 
 /* ── Móvil: todo en columna y la página hace scroll ───────────────── */
