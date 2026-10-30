@@ -55,6 +55,11 @@ a:focus-visible {
   outline-offset: 2px;
 }
 
+/* Cabecera + escenario. Sin caja propia salvo en pantallas bajas (ver «Pantallas bajas»). */
+.stage {
+  display: contents;
+}
+
 /* ── Cabecera ───────────────────────────────────────────────────────── */
 #topbar {
   display: flex;
@@ -522,6 +527,41 @@ optgroup {
 #statusbar .credit a:focus-visible {
   color: var(--accent);
   text-decoration-color: var(--accent);
+}
+
+/* En táctil sobran las pistas de teclado y ratón; la del clic en la cuadrícula ya la da la
+   ficha de «Los 30». Sin ellas los créditos caben en una línea: pie de 51 a 34 px en la
+   tablet (1035×557). */
+@media (pointer: coarse) {
+  #statusbar .tip {
+    display: none;
+  }
+}
+
+/* ── Pantallas bajas: cabecera y escenario llenan la pantalla; afinación y pie, con scroll ──
+   Con todo en una pantalla, el centro se quedaba en 175 px a 1035×557 (cabecera 114,
+   afinación 210, pie 48) y la ficha (hasta 437 px con Kepler-90) se metía bajo la afinación,
+   con el «1 segundo = …» encima del panel. Comprimir la afinación (sin notas, 5 columnas)
+   solo lo subía a 276 px y la ficha seguía sin caber. Así queda en 443 px.
+   Umbrales: alto máximo al que la ficha de Kepler-90 desbordaba el centro, medido en Chrome
+   con barrido de 1 px: 826 px hasta 1149 de ancho (cabecera en dos filas y afinación en
+   dos; 1024×768 incluido), 760 hasta 1279 y 701 desde 1280 (entre 1347 y 1367; a 1920,
+   658). Los umbrales llevan unos px de margen. Por encima, el diseño de siempre: a
+   1366×768 o 1280×800 la ficha cabe y la afinación sigue a la vista.
+   Queda sin cubrir 821–887 px de ancho (cabecera en tres filas), que desborda hasta 913. */
+@media (min-width: 821px) and (max-width: 1149px) and (max-height: 830px),
+  (min-width: 821px) and (max-width: 1279px) and (max-height: 760px),
+  (min-width: 821px) and (max-height: 710px) {
+  html,
+  body {
+    height: auto;
+  }
+
+  .stage {
+    display: flex;
+    flex-direction: column;
+    height: 100svh;
+  }
 }
 
 /* ── Móvil: todo en columna y la página hace scroll ───────────────── */

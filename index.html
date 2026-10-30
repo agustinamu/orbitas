@@ -18,33 +18,35 @@
     <link rel="preload" href="data/systems.json" as="fetch" crossorigin />
   </head>
   <body>
-    <header id="topbar">
-      <div class="brand">
-        <h1>Órbitas <span class="accent">que</span> suenan</h1>
-        <span class="sub">— una nota por órbita —</span>
-      </div>
-      <div class="controls">
-        <button id="btn-sound" class="accent" aria-pressed="false">Activar sonido</button>
-        <span class="sep"></span>
-        <button id="btn-prev" title="Sistema anterior (←)" aria-label="Sistema anterior">‹</button>
-        <select id="system-select" title="Sistema planetario" aria-label="Sistema planetario" disabled></select>
-        <button id="btn-next" title="Sistema siguiente (→)" aria-label="Sistema siguiente">›</button>
-        <span class="sep"></span>
-        <button id="btn-play" aria-pressed="false" title="Pausa (espacio)">Pausa</button>
-        <button id="btn-restart" title="Vuelve a alinear los planetas en la vertical">Reiniciar</button>
-        <button id="btn-tour" aria-pressed="false" title="Recorre los 30 sistemas como el vídeo">Recorrido</button>
-        <button id="btn-all" aria-pressed="false" title="Todos los sistemas sonando a la vez">Los 30</button>
-      </div>
-    </header>
+    <div class="stage">
+      <header id="topbar">
+        <div class="brand">
+          <h1>Órbitas <span class="accent">que</span> suenan</h1>
+          <span class="sub">— una nota por órbita —</span>
+        </div>
+        <div class="controls">
+          <button id="btn-sound" class="accent" aria-pressed="false">Activar sonido</button>
+          <span class="sep"></span>
+          <button id="btn-prev" title="Sistema anterior (←)" aria-label="Sistema anterior">‹</button>
+          <select id="system-select" title="Sistema planetario" aria-label="Sistema planetario" disabled></select>
+          <button id="btn-next" title="Sistema siguiente (→)" aria-label="Sistema siguiente">›</button>
+          <span class="sep"></span>
+          <button id="btn-play" aria-pressed="false" title="Pausa (espacio)">Pausa</button>
+          <button id="btn-restart" title="Vuelve a alinear los planetas en la vertical">Reiniciar</button>
+          <button id="btn-tour" aria-pressed="false" title="Recorre los 30 sistemas como el vídeo">Recorrido</button>
+          <button id="btn-all" aria-pressed="false" title="Todos los sistemas sonando a la vez">Los 30</button>
+        </div>
+      </header>
 
-    <main id="content">
-      <section id="info" aria-live="polite"></section>
-      <div id="sky" role="region" aria-label="Órbitas de los planetas">
-        <canvas id="canvas"></canvas>
-        <p id="rate"></p>
-        <div id="tour-progress"></div>
-      </div>
-    </main>
+      <main id="content">
+        <section id="info" aria-live="polite"></section>
+        <div id="sky" role="region" aria-label="Órbitas de los planetas">
+          <canvas id="canvas"></canvas>
+          <p id="rate"></p>
+          <div id="tour-progress"></div>
+        </div>
+      </main>
+    </div>
 
     <section id="tuning" aria-label="Afinación">
       <div class="field">
@@ -88,9 +90,9 @@
 
     <footer id="statusbar">
       <a class="back" href="https://ekain.amutxastegi.com/">← herramientas</a>
-      <span><b>espacio</b> pausa</span>
-      <span><b>← →</b> sistema</span>
-      <span><b>clic</b> en la cuadrícula elige sistema</span>
+      <span class="tip"><b>espacio</b> pausa</span>
+      <span class="tip"><b>← →</b> sistema</span>
+      <span class="tip"><b>clic</b> en la cuadrícula elige sistema</span>
       <span class="credit">
         basado en el vídeo
         <a href="https://www.youtube.com/watch?v=lWXQJ95krF4" target="_blank" rel="noopener"
